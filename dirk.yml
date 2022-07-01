@@ -1,0 +1,106 @@
+version: "3.4"
+
+x-logging: &logging
+  logging:
+    driver: "json-file"
+    options:
+      max-file: "3"
+      max-size: "100m"
+
+services:
+  dirk:
+    image: attestant/dirk:${DIRK_DOCKER_TAG}
+    restart: unless-stopped
+    command: ["--base-dir=/config"]
+    ports:
+      - 13141:13141/tcp 
+    volumes:
+      - ./config/dirk${DIRK_INSTANCE}.yml:/config/dirk.yml:ro
+      - ./config/certs:/config/certs:ro
+      - ./config/passphrases:/config/passphrases:ro
+      - dirk-data:/data
+    <<: *logging
+  create-wallet:
+    profiles: ["tools"]
+    image: wealdtech/ethdo:latest
+    volumes:
+      - dirk-data:/data
+    command:
+      - --base-dir=/data/wallets
+      - wallet
+      - create
+      - --type=distributed
+      - --wallet=DistributedWallet
+  create-accounts:
+    profiles: ["tools"]
+    image: wealdtech/ethdo:latest
+    volumes:
+      - ./config/certs:/config/certs:ro
+      - dirk-data:/data
+    entrypoint: ["/bin/bash","-c"]
+    command:
+      - |
+        set -e
+        for (( i=${STARTACCOUNT}; i<=${ENDACCOUNT}; i++ )); do
+          /app/ethdo account create \
+          --remote=${DIRK1}.${DOMAIN}:13141 \
+          --server-ca-cert /config/certs/dirk_authority.crt \
+          --client-cert /config/certs/vouch1.crt \
+          --client-key /config/certs/vouch1.key \
+          --account=DistributedWallet/val-$$i \
+          --signing-threshold=3 \
+          --participants=5
+          echo Created validator account $$i
+        done
+  create-depositdata:
+    profiles: ["tools"]
+    image: wealdtech/ethdo:latest
+    volumes:
+      - ./config/certs:/config/certs:ro
+      - ./config/depositdata:/config/depositdata:rw
+      - dirk-data:/data
+    entrypoint: ["/bin/bash","-c"]
+    command:
+      - |
+        set -e
+        for (( i=${STARTACCOUNT}; i<=${ENDACCOUNT}; i++ )); do
+          /app/ethdo validator depositdata \
+          --depositvalue 32Ether \
+          --remote=${DIRK1}.${DOMAIN}:13141 \
+          --server-ca-cert /config/certs/dirk_authority.crt \
+          --client-cert /config/certs/vouch1.crt \
+          --client-key /config/certs/vouch1.key \
+          --validatoraccount DistributedWallet/val-$$i \
+          --launchpad \
+          --forkversion ${FORK_VERSION} \
+          --withdrawaladdress ${WITHDRAWAL_ADDRESS} > /config/depositdata/deposit-val-$$i.json
+          echo Created depositdata for validator $$i
+        done
+  verify-account:
+    profiles: ["tools"]
+    image: wealdtech/ethdo:latest
+    volumes:
+      - ./config/certs:/config/certs:ro
+      - dirk-data:/data
+    entrypoint: ["/bin/bash","-c"]
+    command:
+      - |
+        set -e
+        account=DistributedWallet/val-1
+        echo Verifying one account across five instances
+        echo All five should show 3/5 threshold for val-1, and matching
+        echo public key and participants. The withdrawal credentials
+        echo can be ignored.
+        echo
+        for host in ${DIRK1}.${DOMAIN} ${DIRK2}.${DOMAIN} ${DIRK3}.${DOMAIN} ${DIRK4}.${DOMAIN} ${DIRK5}.${DOMAIN}; do
+          /app/ethdo account info \
+          --remote=$$host:13141 \
+          --server-ca-cert /config/certs/dirk_authority.crt \
+          --client-cert /config/certs/vouch1.crt \
+          --client-key /config/certs/vouch1.key \
+          --account=$$account \
+          --verbose
+          echo
+        done
+volumes:
+  dirk-data:
