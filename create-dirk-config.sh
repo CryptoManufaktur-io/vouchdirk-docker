@@ -228,7 +228,7 @@ accountmanager:
     client-key: file:///config/certs/vouch$i.key
     ca-cert: file:///config/certs/dirk_authority.crt
     accounts:
-      - DistributedWallet
+      - ${WALLET_NAME}
 EOF
 done
 echo Done

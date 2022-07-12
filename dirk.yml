@@ -30,7 +30,7 @@ services:
       - wallet
       - create
       - --type=distributed
-      - --wallet=DistributedWallet
+      - --wallet=${WALLET_NAME}
   create-accounts:
     profiles: ["tools"]
     image: wealdtech/ethdo:latest
@@ -47,7 +47,7 @@ services:
           --server-ca-cert /config/certs/dirk_authority.crt \
           --client-cert /config/certs/vouch1.crt \
           --client-key /config/certs/vouch1.key \
-          --account=DistributedWallet/val-$$i \
+          --account=${WALLET_NAME}/val-$$i \
           --signing-threshold=3 \
           --participants=5
           echo Created validator account $$i
@@ -70,7 +70,7 @@ services:
           --server-ca-cert /config/certs/dirk_authority.crt \
           --client-cert /config/certs/vouch1.crt \
           --client-key /config/certs/vouch1.key \
-          --validatoraccount DistributedWallet/val-$$i \
+          --validatoraccount ${WALLET_NAME}/val-$$i \
           --launchpad \
           --forkversion ${FORK_VERSION} \
           --withdrawaladdress ${WITHDRAWAL_ADDRESS} > /config/depositdata/deposit-val-$$i.json
@@ -86,7 +86,7 @@ services:
     command:
       - |
         set -e
-        account=DistributedWallet/val-1
+        account=${WALLET_NAME}/val-1
         echo Verifying one account across five instances
         echo All five should show 3/5 threshold for val-1, and matching
         echo public key and participants. The withdrawal credentials
