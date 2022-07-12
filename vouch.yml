@@ -11,14 +11,7 @@ services:
   vouch:
     image: attestant/vouch:${VOUCH_DOCKER_TAG}
     restart: unless-stopped
-    entrypoint: ["/bin/bash","-c"]
-    command:
-     - |
-       set -e
-       apt-get update
-       apt-get -y dist-upgrade
-       apt-get -y install ca-certificates
-       exec /app/vouch --base-dir=/config
+    command: ["--base-dir=/config"]
     volumes:
       - ./config/vouch${VOUCH_INSTANCE}.yml:/config/vouch.yml:ro
       - ./config/certs:/config/certs:ro
