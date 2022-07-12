@@ -137,6 +137,8 @@ for i in {1..2}; do
 # log-level is the global log level for Vouch logging.
 log-level: Info
 
+# Beacon nodes / CLs to connect to. This section is repeated by design further down;
+# Vouch deliberately does not use a hierarchical config
 beacon-node-addresses:
   - ${CL1}
   - ${CL2}
