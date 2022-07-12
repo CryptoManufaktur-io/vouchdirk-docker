@@ -22,7 +22,7 @@ services:
     <<: *logging
   create-wallet:
     profiles: ["tools"]
-    image: wealdtech/ethdo:latest
+    image: wealdtech/ethdo:${ETHDO_DOCKER_TAG}
     volumes:
       - dirk-data:/data
     command:
@@ -33,7 +33,7 @@ services:
       - --wallet=${WALLET_NAME}
   create-accounts:
     profiles: ["tools"]
-    image: wealdtech/ethdo:latest
+    image: wealdtech/ethdo:${ETHDO_DOCKER_TAG}
     volumes:
       - ./config/certs:/config/certs:ro
       - dirk-data:/data
@@ -54,7 +54,7 @@ services:
         done
   create-depositdata:
     profiles: ["tools"]
-    image: wealdtech/ethdo:latest
+    image: wealdtech/ethdo:${ETHDO_DOCKER_TAG}
     volumes:
       - ./config/certs:/config/certs:ro
       - ./config/depositdata:/config/depositdata:rw
@@ -78,7 +78,7 @@ services:
         done
   verify-account:
     profiles: ["tools"]
-    image: wealdtech/ethdo:latest
+    image: wealdtech/ethdo:${ETHDO_DOCKER_TAG}
     volumes:
       - ./config/certs:/config/certs:ro
       - dirk-data:/data
