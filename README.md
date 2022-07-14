@@ -25,7 +25,8 @@ To verify the first of these keys for correctness, run `docker-compose run --rm 
 To create deposit data, using the same start and stop index in `.env`, run `docker-compose run --rm create-depositdata`. Adjust `FORK_VERSION` in
 `.env` if you are going to generate for a testnet.
 
-You can then create a single deposit.json with: `jq -n '[inputs|add]' config/depositdata/deposit-val-* > ./deposits.json`
+You can then create a single deposit.json with: `jq -n '[inputs|add]' config/depositdata/deposit-val-{1..10}.json > ./deposits.json`, adjusting for the
+range you want to have in the file.
 
 ## Architecture; redundancy and slashing considerations
 
