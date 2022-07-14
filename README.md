@@ -48,6 +48,11 @@ The recommendation by attestant.io is to restart dirk instances after adding or 
 
 ethdo can back up the distributed wallet; the docker volume that holds the wallets on each dirk host could also be backed up
 
+## Prometheus
+
+By adding `prometheus.yml:ext-network.yml` you can run a Prometheus that can be scraped externally via a traefik running in a separate stack.
+Please see eth-docker.net documentation for how to set up traefik.
+
 ## Acknowledgements
 
 Huge THANK YOU to Jeff Schroeder at Jump Crypto for generously sharing his knowledge of this setup, and to Jim McDonald at attestant.io for creating these tools
