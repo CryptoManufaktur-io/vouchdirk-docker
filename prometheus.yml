@@ -23,10 +23,10 @@ services:
     <<: *logging
     labels:
       - traefik.enable=true
-      - traefik.http.routers.prom.entrypoints=web,websecure
-      - traefik.http.routers.prom.rule=Host(`${PROM_HOST}.${DOMAIN}`)
-      - traefik.http.routers.prom.tls.certresolver=letsencrypt
-      - traefik.http.services.prom.loadbalancer.server.port=9090
+      - traefik.http.routers.prom-vd.entrypoints=web,websecure
+      - traefik.http.routers.prom-vd.rule=Host(`${PROM_HOST}.${DOMAIN}`)
+      - traefik.http.routers.prom-vd.tls.certresolver=letsencrypt
+      - traefik.http.services.prom-vd.loadbalancer.server.port=9090
 
 volumes:
   prom-data:
