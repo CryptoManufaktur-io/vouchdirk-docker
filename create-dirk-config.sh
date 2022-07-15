@@ -170,7 +170,6 @@ submitter:
   beacon-node-addresses:
     - ${CL1}
     - ${CL2}
-    - ${CL3}
 
 # fee recipient provides information about the fee recipient for block proposals.  Advanced configuration
 # information is available in the documentation.
