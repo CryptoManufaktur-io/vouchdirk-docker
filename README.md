@@ -30,7 +30,7 @@ range you want to have in the file.
 
 ## Architecture; redundancy and slashing considerations
 
-2 Vouch and a 3/5 Dirk (3 threshold, 5 total) were chosen carefully. With 2 Vouch and 2/4 Dirk there would be a risk of slashing; 3 Vouch and 3/5 Dirk, Vouch might not get to threshold
+2 Vouch (one warm standby) and a 3/5 Dirk (3 threshold, 5 total) were chosen carefully. With 2 Vouch and 2/4 Dirk there would be a risk of slashing; 3 Vouch and 3/5 Dirk, Vouch might not get to threshold
 and never be able to sign duties. 
 
 1 Vouch and 2/3 Dirk would also work just as well.
@@ -40,13 +40,26 @@ in these numbers.
 
 An alternate setup could run 1 Vouch and a 2/3 Dirk threshold setup inside a single k8s cluster. This repo does not aim to support that use case.
 
+The reason a cross-region setup was chosen is that while region outages are rare, they do occur. In the absence of DVT (Distributed Validator Technology) as of mid 2022, it is desirable for a staking node operator to be able to regain liveness even when an entire region fails.
+
+With multiple Vouch instances, a degradation in the number of Dirk instances can result in the inability to sign. At its simplest, if there are 2 Vouch and 4 Dirk (out of originally 5) with a threshold of 3, then it is possible for one Vouch instance to obtain 2 signatures and the second Vouch instance to obtain 2 signatures, with neither reaching the threshold and no signature generated.
+
+For this reason, it is recommended to run Vouch in container orchestration with cross-AZ failover, and have the second Vouch instance ready in case there is an outage for an entire region. Vouch is stateless and will start in seconds.
+
+Slashing protection works like this:
+- Vouch will ask Dirk for a threshold signature
+- A Dirk that has already participated in one will refuse to do so again because slashing protection DB. That means if both Vouch are running simultaneously, one will get to at least 3/5, the other at most 2/5 and won't get a full signature
+- The slashing protection DB is kept locally by each Dirk
+
 ## Adding and removing keys
 
-The recommendation by attestant.io is to restart dirk instances after adding or removing keys, because of the way caching works.
+The recommendation by attestant.io is to restart Dirk instances after adding or removing keys, because of the way caching works.
 
 ## Backup and restore
 
-ethdo can back up the distributed wallet; the docker volume that holds the wallets on each dirk host could also be backed up
+ethdo can back up the wallet of each Dirk; the docker volume that holds the wallets on each Dirk host could also be backed up
+
+Each Dirk instance is its own entity. When backing up the keys on one Dirk instance, if it subsequently fails, the backup of that instance can be restored and once it is rebuilt it will continue in the cluster.
 
 ## Prometheus
 
@@ -56,7 +69,7 @@ Please see eth-docker.net documentation for how to set up traefik.
 ## Acknowledgements
 
 Huge THANK YOU to Jeff Schroeder at Jump Crypto for generously sharing his knowledge of this setup, and to Jim McDonald at attestant.io for creating these tools
-in the first place, and always having patience and time to troubleshoot.
+in the first place, and always having patience and time for explanations.
 
 ## Resources
 
