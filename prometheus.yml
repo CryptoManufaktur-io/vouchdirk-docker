@@ -27,6 +27,25 @@ services:
       - traefik.http.routers.${PROM_HOST}.rule=Host(`${PROM_HOST}.${DOMAIN}`)
       - traefik.http.routers.${PROM_HOST}.tls.certresolver=letsencrypt
       - traefik.http.services.${PROM_HOST}.loadbalancer.server.port=9090
+    depends_on:
+      - node-exporter
+  node-exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    command:
+      - '--path.rootfs=/host'
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points=^/(dev|proc|sys|run|var/lib/docker/.+)($$|/)'
+      - '--no-collector.ipvs'
+    pid: host
+    restart: unless-stopped
+    volumes:
+      - '/:/host:ro,rslave'
+      - /etc/hostname:/etc/nodename:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /etc/localtime:/etc/localtime:ro
+    <<: *logging
 
 volumes:
   prom-data:
