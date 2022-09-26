@@ -73,6 +73,6 @@ in the first place, and always having patience and time for explanations.
 
 ## Resources
 
-[Distributed key generation guide](https://github.com/attestantio/dirk/blob/master/docs/distributed_key_generation.md)
-[Ethstaker Discord](https://discord.io/ethstaker)
-[Attestant Discord](https://discord.gg/U5GNUuQQr3)
+- [Distributed key generation guide](https://github.com/attestantio/dirk/blob/master/docs/distributed_key_generation.md)
+- [Ethstaker Discord](https://discord.io/ethstaker)
+- [Attestant Discord](https://discord.gg/U5GNUuQQr3)
