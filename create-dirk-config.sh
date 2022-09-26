@@ -174,7 +174,7 @@ submitter:
 # blockrelay provides information about mev relays.  Advanced configuration
 # information is available in the documentation.
 blockrelay:
-  fallback-fee-recipient: ${FEE_RECIPIENT}
+  fallback-fee-recipient: '${FEE_RECIPIENT}'
   config:
     url: file:///config/vouch-ee.json
 
