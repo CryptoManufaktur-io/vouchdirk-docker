@@ -24,7 +24,7 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.${PROM_HOST}.entrypoints=web,websecure
-      - traefik.http.routers.${PROM_HOST}.rule=Host(`${PROM_HOST}.${DOMAIN}`)
+      - traefik.http.routers.${PROM_HOST}.rule=Host(`${PROM_HOST}.${TLSDOMAIN}`)
       - traefik.http.routers.${PROM_HOST}.tls.certresolver=letsencrypt
       - traefik.http.services.${PROM_HOST}.loadbalancer.server.port=9090
     depends_on:
