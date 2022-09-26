@@ -171,10 +171,12 @@ submitter:
     - ${CL1}
     - ${CL2}
 
-# fee recipient provides information about the fee recipient for block proposals.  Advanced configuration
+# blockrelay provides information about mev relays.  Advanced configuration
 # information is available in the documentation.
-feerecipient:
-  default-address: '${FEE_RECIPIENT}'
+blockrelay:
+  fallback-fee-recipient: ${FEE_RECIPIENT}
+  config:
+    url: file:///config/vouch$i-ee.json
 
 # strategies provide advanced strategies for dealing with multiple beacon nodes
 strategies:
@@ -230,6 +232,20 @@ accountmanager:
     ca-cert: file:///config/certs/dirk_authority.crt
     accounts:
       - ${WALLET_NAME}
+EOF
+  cat << EOF >vouch$i-ee.json
+{
+  "default_config": {
+    "fee_recipient": "${FEE_RECIPIENT}",
+    "gas_limit": "30000000",
+    "builder": {
+      "enabled": true,
+      "relays": [
+        ${MEV_RELAYS}
+      ]
+    }
+  }
+}
 EOF
 done
 echo Done
