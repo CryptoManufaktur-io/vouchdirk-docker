@@ -176,7 +176,7 @@ submitter:
 blockrelay:
   fallback-fee-recipient: ${FEE_RECIPIENT}
   config:
-    url: file:///config/vouch$i-ee.json
+    url: file:///config/vouch-ee.json
 
 # strategies provide advanced strategies for dealing with multiple beacon nodes
 strategies:
