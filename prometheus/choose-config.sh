@@ -10,4 +10,8 @@ case "$CLIENT" in
   *vouch* ) cat /etc/prometheus/vouch-prom.yml >> /etc/prometheus/prometheus.yml ;;
 esac
 
+if [ -f "/etc/prometheus/custom-prom.yml" ]; then
+    cat /etc/prometheus/custom-prom.yml >> /etc/prometheus/prometheus.yml
+fi
+
 exec "$@" --config.file=/etc/prometheus/prometheus.yml
