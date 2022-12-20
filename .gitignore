@@ -1,3 +1,4 @@
 config
 .env
 deposits*.json
+prometheus/custom-prom.yml
