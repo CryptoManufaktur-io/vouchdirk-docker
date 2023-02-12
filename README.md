@@ -59,9 +59,11 @@ The recommendation by attestant.io is to restart Dirk instances after adding or 
 
 ## Backup and restore
 
-ethdo can back up the wallet of each Dirk; the docker volume that holds the wallets on each Dirk host could also be backed up
+To back up the wallet on each local Dirk instance, run `docker-compose run --rm export-keys` and then save the resulting file and the passphrase you used.
 
-Each Dirk instance is its own entity. When backing up the keys on one Dirk instance, if it subsequently fails, the backup of that instance can be restored and once it is rebuilt it will continue in the cluster.
+You will need to run this on all five (5) Dirk instances individually.
+
+Each Dirk instance is its own entity. If a Dirk instance fails, the backup of that instance can be restored and once it is rebuilt it will continue in the cluster.
 
 ## Prometheus
 
