@@ -233,19 +233,15 @@ accountmanager:
     accounts:
       - ${WALLET_NAME}
 EOF
-  cat << EOF >vouch$i-ee.json
+done
+cat << EOF >vouch-ee.json
 {
-  "default_config": {
-    "fee_recipient": "${FEE_RECIPIENT}",
-    "gas_limit": "30000000",
-    "builder": {
-      "enabled": true,
-      "relays": [
+  "version": 2
+  "fee_recipient": "${FEE_RECIPIENT}",
+  "gas_limit": "30000000",
+  "relays": {
         ${MEV_RELAYS}
-      ]
-    }
   }
 }
 EOF
-done
 echo Done

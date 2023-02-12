@@ -16,6 +16,8 @@ would then be copied to each server where a vouch or dirk instance runs. The scr
 
 On each of the Dirk instances, run `docker-compose run --rm create-wallet` once.
 
+Run `docker-compose down && docker-compose up -d` to ensure Dirk loads this new wallet correctly.
+
 ## Key generation
 
 To create keys, adjust start and stop index in `.env` and then run `docker-compose run --rm create-accounts`.

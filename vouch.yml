@@ -14,7 +14,7 @@ services:
     command: ["--base-dir=/config"]
     volumes:
       - ./config/vouch${VOUCH_INSTANCE}.yml:/config/vouch.yml:ro
-      - ./config/vouch${VOUCH_INSTANCE}-ee.json:/config/vouch-ee.json:ro
+      - ./config/vouch-ee.json:/config/vouch-ee.json:ro
       - ./config/certs:/config/certs:ro
     labels:
       - traefik.enable=true
