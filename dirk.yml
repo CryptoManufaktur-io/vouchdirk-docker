@@ -99,5 +99,35 @@ services:
           --verbose
           echo
         done
+  export-keys:
+    profiles: ["tools"]
+    image: wealdtech/ethdo:${ETHDO_DOCKER_TAG}
+    volumes:
+      - ./config/certs:/config/certs:ro
+      - ./keys:/app/keys
+      - dirk-data:/data
+    entrypoint: ["/bin/bash","-c"]
+    command:
+      - |
+        set -e
+        while true; do
+            read -srp "What is the passphrase to encrypt the backup? : " __passphrase
+            echo
+            read -srp "Please verify the passphrase : " __passphrase2
+            if [[ $${__passphrase} = $${__passphrase2} ]]; then
+                break
+            else
+                echo "Passphrase did not match. You can try again or hit Enter twice to abort."
+            fi
+        done
+        echo Backing up local wallet. Please make sure to run this on all five Dirks!
+        echo Backup can be found in ./keys/dirk${DIRK_INSTANCE}-export.dat
+        echo
+        /app/ethdo wallet export \
+        --base-dir=/data/wallets \
+        --wallet=${WALLET_NAME} \
+        --passphrase=$${__passphrase} \
+        > /app/keys/dirk${DIRK_INSTANCE}-export.dat
+        echo
 volumes:
   dirk-data:
