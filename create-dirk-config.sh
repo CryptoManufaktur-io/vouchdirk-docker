@@ -234,7 +234,7 @@ accountmanager:
       - ${WALLET_NAME}
 EOF
 done
-cat << EOF >vouch-ee.json
+cat << EOF >vouch-ee.json.tmp
 {
   "version": 2,
   "fee_recipient": "${FEE_RECIPIENT}",
@@ -244,4 +244,6 @@ cat << EOF >vouch-ee.json
   }
 }
 EOF
+jq . <vouch-ee.json.tmp >vouch-ee.json
+rm vouch-ee.json.tmp
 echo Done
