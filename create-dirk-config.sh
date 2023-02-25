@@ -236,7 +236,7 @@ EOF
 done
 cat << EOF >vouch-ee.json
 {
-  "version": 2
+  "version": 2,
   "fee_recipient": "${FEE_RECIPIENT}",
   "gas_limit": "30000000",
   "relays": {
