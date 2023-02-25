@@ -170,6 +170,7 @@ submitter:
   beacon-node-addresses:
     - ${CL1}
     - ${CL2}
+    - ${CL3}
 
 # blockrelay provides information about mev relays.  Advanced configuration
 # information is available in the documentation.
