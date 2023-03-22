@@ -99,6 +99,45 @@ services:
           --verbose
           echo
         done
+  sign-exits:
+    profiles: ["tools"]
+    image: wealdtech/ethdo:${ETHDO_DOCKER_TAG}
+    volumes:
+      - ./config/certs:/config/certs:ro
+      - ./config/exitmessages:/config/exitmessages:rw
+    entrypoint: ["/bin/bash","-c"]
+    command:
+      - |
+        set -e
+        apt-get update && apt-get install -y jq
+        for (( i=${STARTACCOUNT}; i<=${ENDACCOUNT}; i++ )); do
+          /app/ethdo validator exit \
+          --json \
+          --remote=${DIRK1}.${DOMAIN}:13141 \
+          --server-ca-cert /config/certs/dirk_authority.crt \
+          --client-cert /config/certs/vouch${VOUCH_INSTANCE}.crt \
+          --client-key /config/certs/vouch${VOUCH_INSTANCE}.key \
+          --account=${WALLET_NAME}/val-$$i \
+          --connection=${CL1} >/config/exitmessages/exit-operation.json
+          echo Signed exit for validator account $$i
+          __index=$(jq -r .exit.message.validator_index </config/exitmessages/exit-operation.json)
+          mv /config/exitmessages/exit-operation.json /config/exitmessages/$$__index-exit.json
+        done
+        echo Please run \"docker-compose run --rm encrypt-exits\" next.
+        echo They\'ll be in ./config/exits afterwards, encrypted with the password in .env
+        echo Please remember to delete the unencrypted files in ./config/exitmessages
+
+  encrypt-exits:
+    profiles: ["tools"]
+    image: lidofinance/validator-ejector:dev
+    volumes:
+      - ./config/exitmessages:/app/encryptor/input/:ro
+      - ./config/exits:/app/encryptor/output/:rw
+    environment:
+      - MESSAGES_PASSWORD=${EXIT_PASSPHRASE}
+    user: root
+    command: [ "node", "/app/dist/encryptor/encrypt.js"]
+
   export-keys:
     profiles: ["tools"]
     image: wealdtech/ethdo:${ETHDO_DOCKER_TAG}

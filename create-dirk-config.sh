@@ -63,6 +63,8 @@ for i in {1..5}; do
   echo "ID $i is ${id[$i]}"
 done
 
+__publicIP=$(curl -s ip.me)
+
 for i in {1..5}; do
   if [ -f dirk$i.yml ]; then
     break
@@ -80,6 +82,9 @@ server:
   # listen-address is the interface and port on which Dirk will listen for requests; change 127.0.0.1
   # to 0.0.0.0 to listen on all network interfaces.
   listen-address: 0.0.0.0:13141
+  rules:
+    # admin-ips is a list of IP addresses from which requests for voluntary exists will be accepted.
+    admin-ips: [ ${__publicIP} ]
 # storage-path is the path where information created by the slashing protection system is stored.
 storage-path: /data/protection
 certificates:
