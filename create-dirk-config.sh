@@ -63,7 +63,7 @@ for i in {1..5}; do
   echo "ID $i is ${id[$i]}"
 done
 
-__publicIP=$(curl -s ip.me)
+__publicIP=$(curl -s ifconfig.me/ip)
 
 for i in {1..5}; do
   if [ -f dirk$i.yml ]; then
