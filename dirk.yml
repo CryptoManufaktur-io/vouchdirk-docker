@@ -120,7 +120,7 @@ services:
           --account=${WALLET_NAME}/val-$$i \
           --connection=${CL1} >/config/exitmessages/exit-operation.json
           echo Signed exit for validator account $$i
-          __index=$(jq -r .exit.message.validator_index </config/exitmessages/exit-operation.json)
+          __index=$(jq -r .message.validator_index </config/exitmessages/exit-operation.json)
           mv /config/exitmessages/exit-operation.json /config/exitmessages/$$__index-exit.json
         done
         echo Please run \"docker-compose run --rm encrypt-exits\" next.
