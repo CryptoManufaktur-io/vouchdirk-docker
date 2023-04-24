@@ -1,4 +1,5 @@
 config
+!config/.empty
 .env
 deposits*.json
 prometheus/custom-prom.yml
