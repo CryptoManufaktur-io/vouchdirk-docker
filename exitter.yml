@@ -17,6 +17,8 @@ services:
       - ./config/certs:/config/certs:ro
     environment:
       - EXITTER_PORT=${EXITTER_PORT}
+    expose:
+      - ${EXITTER_PORT:-13131}
     labels:
       - traefik.enable=true
       - traefik.http.routers.${EXITTER_HOST:-exitter}.service=${EXITTER_HOST:-exitter}
