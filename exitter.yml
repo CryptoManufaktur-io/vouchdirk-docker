@@ -1,0 +1,27 @@
+version: "3.4"
+
+x-logging: &logging
+  logging:
+    driver: "json-file"
+    options:
+      max-file: "3"
+      max-size: "100m"
+
+services:
+  exitter:
+    image: ghcr.io/cryptomanufaktur-io/eth-jit-exitter:main
+    restart: unless-stopped
+    command: ["--config=/config/exitter.yml"]
+    volumes:
+      - ./config/exitter.yml:/config/exitter.yml:ro
+      - ./config/certs:/config/certs:ro
+    environment:
+      - EXITTER_PORT=${EXITTER_PORT}
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.${EXITTER_HOST:-exitter}.service=${EXITTER_HOST:-exitter}
+      - traefik.http.routers.${EXITTER_HOST:-exitter}.entrypoints=websecure
+      - traefik.http.routers.${EXITTER_HOST:-exitter}.rule=Host(`${EXITTER_HOST:-exitter}.${TLSDOMAIN}`)
+      - traefik.http.routers.${EXITTER_HOST:-exitter}.tls.certresolver=letsencrypt
+      - traefik.http.services.${EXITTER_HOST:-exitter}.loadbalancer.server.port=${EXITTER_PORT:-13131}
+    <<: *logging
