@@ -21,12 +21,6 @@ services:
     entrypoint: choose-config.sh
     command: ["/bin/prometheus", "--storage.tsdb.path=/prometheus", "--web.console.libraries=/usr/share/prometheus/console_libraries", "--web.console.templates=/usr/share/prometheus/consoles"]
     <<: *logging
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.${PROM_HOST}.entrypoints=web,websecure
-      - traefik.http.routers.${PROM_HOST}.rule=Host(`${PROM_HOST}.${TLSDOMAIN}`)
-      - traefik.http.routers.${PROM_HOST}.tls.certresolver=letsencrypt
-      - traefik.http.services.${PROM_HOST}.loadbalancer.server.port=9090
     depends_on:
       - node-exporter
   node-exporter:

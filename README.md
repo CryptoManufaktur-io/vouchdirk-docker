@@ -12,22 +12,22 @@ host and domain names to fit your environment.
 `./create-dirk-config.sh` is meant to be run just once. It has no sanity checks and creates the CA, certs, and config yml files. The `config` directory
 would then be copied to each server where a vouch or dirk instance runs. The script gets names from `.env`, which must exist.
 
-`docker-compose up -d` to start Vouch/Dirk services.
+`docker compose up -d` to start Vouch/Dirk services.
 
-On each of the Dirk instances, run `docker-compose run --rm create-wallet` once.
+On each of the Dirk instances, run `docker compose run --rm create-wallet` once.
 
-Run `docker-compose down && docker-compose up -d` to ensure Dirk loads this new wallet correctly.
+Run `docker compose down && docker compose up -d` to ensure Dirk loads this new wallet correctly.
 
 ## Key generation
 
-To create keys, adjust start and stop index in `.env` and then run `docker-compose run --rm create-accounts`.
+To create keys, adjust start and stop index in `.env` and then run `docker compose run --rm create-accounts`.
 
-To verify the first of these keys for correctness, run `docker-compose run --rm verify-account`
+To verify the first of these keys for correctness, run `docker compose run --rm verify-account`
 
-To create deposit data, using the same start and stop index in `.env`, run `docker-compose run --rm create-depositdata`. Adjust `FORK_VERSION` in
+To create deposit data, using the same start and stop index in `.env`, run `docker compose run --rm create-depositdata`. Adjust `FORK_VERSION` in
 `.env` if you are going to generate for a testnet.
 
-You can then create a single deposit.json with: `jq -n '[inputs|add]' config/depositdata/deposit-val-{1..10}.json > ./deposits.json`, adjusting for the
+You can then create a single deposit.json with: `jq -n '[inputs|add]' config/depositdata/deposit-val-{1..10}.json > ~/deposits.json`, adjusting for the
 range you want to have in the file.
 
 ## Architecture; redundancy and slashing considerations
@@ -42,9 +42,9 @@ in these numbers.
 
 An alternate setup could run 1 Vouch and a 2/3 Dirk threshold setup inside a single k8s cluster. This repo does not aim to support that use case.
 
-The reason a cross-region setup was chosen is that while region outages are rare, they do occur. In the absence of DVT (Distributed Validator Technology) as of mid 2022, it is desirable for a staking node operator to be able to regain liveness even when an entire region fails.
+The reason a cross-region setup was chosen is that while region outages are rare, they do occur. It is desirable for a staking node operator to be able to regain liveness even when an entire region fails.
 
-With multiple Vouch instances, a degradation in the number of Dirk instances can result in the inability to sign. At its simplest, if there are 2 Vouch and 4 Dirk (out of originally 5) with a threshold of 3, then it is possible for one Vouch instance to obtain 2 signatures and the second Vouch instance to obtain 2 signatures, with neither reaching the threshold and no signature generated.
+With multiple Vouch instances, a degradation in the number of Dirk instances can result in the inability to sign. At its simplest, if there are 2 Vouch and 4 Dirk (out of originally 5) with a threshold of 3, then it is possible for one Vouch instance to obtain 2 signatures and the second Vouch instance to obtain 2 signatures, with neither reaching the threshold and no signature generated. If MEV is in use, the CL needs to "point back to" Vouch, and this as well requires the use of a single Vouch instance.
 
 For this reason, it is recommended to run Vouch in container orchestration with cross-AZ failover, and have the second Vouch instance ready in case there is an outage for an entire region. Vouch is stateless and will start in seconds.
 
@@ -59,7 +59,7 @@ The recommendation by attestant.io is to restart Dirk instances after adding or 
 
 ## Backup and restore
 
-To back up the wallet on each local Dirk instance, run `docker-compose run --rm export-keys` and then save the resulting file and the passphrase you used.
+To back up the wallet on each local Dirk instance, run `docker compose run --rm export-keys` and then save the resulting file and the passphrase you used.
 
 You will need to run this on all five (5) Dirk instances individually.
 
@@ -67,8 +67,7 @@ Each Dirk instance is its own entity. If a Dirk instance fails, the backup of th
 
 ## Prometheus
 
-By adding `prometheus.yml:ext-network.yml` you can run a Prometheus that can be scraped externally via a traefik running in a separate stack.
-Please see eth-docker.net documentation for how to set up traefik.
+By adding `prometheus.yml:ext-network.yml` you can run a Prometheus that can remote-write to your Mimir or Thanos, with the remote-write section in `prometheus/custom-prom.yml`.
 
 ## Acknowledgements
 
