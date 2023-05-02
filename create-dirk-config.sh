@@ -83,7 +83,7 @@ server:
   # to 0.0.0.0 to listen on all network interfaces.
   listen-address: 0.0.0.0:13141
   rules:
-    # admin-ips is a list of IP addresses from which requests for voluntary exists will be accepted.
+    # admin-ips is a list of IP addresses from which requests for voluntary exits will be accepted.
     admin-ips: [ ${__publicIP} ]
 # storage-path is the path where information created by the slashing protection system is stored.
 storage-path: /data/protection
@@ -252,4 +252,17 @@ cat << EOF >vouch-ee.json.tmp
 EOF
 jq . <vouch-ee.json.tmp >vouch-ee.json
 rm vouch-ee.json.tmp
+echo Create exiter config file
+cat << EOF >exiter.yml
+running_mode: SIGNER
+
+beacon_node_url: ${CL1}
+
+dirk:
+  endpoint: ${DIRK1}.${DOMAIN}:13141
+  client_cert: /config/certs/vouch1.crt
+  client_key: /config/certs/vouch1.key
+  ca_cert: /config/certs/dirk_authority.crt
+  wallet: ${WALLET_NAME}
+EOF
 echo Done
