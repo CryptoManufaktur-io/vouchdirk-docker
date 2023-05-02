@@ -20,7 +20,7 @@ services:
       - traefik.enable=true
       - traefik.http.routers.${MEV_HOST:-mev}.service=${MEV_HOST:-mev}
       - traefik.http.routers.${MEV_HOST:-mev}.entrypoints=websecure
-      - traefik.http.routers.${MEV_HOST:-mev}.rule=Host(`${MEV_HOST:-mev}.${TLSDOMAIN}`)
+      - traefik.http.routers.${MEV_HOST:-mev}.rule=Host(`${MEV_HOST:-mev}.${DOMAIN}`)
       - traefik.http.routers.${MEV_HOST:-mev}.tls.certresolver=letsencrypt
       - traefik.http.services.${MEV_HOST:-mev}.loadbalancer.server.port=18550
     <<: *logging

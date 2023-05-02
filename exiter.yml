@@ -23,7 +23,7 @@ services:
       - traefik.enable=true
       - traefik.http.routers.${EXITER_HOST:-exiter}.service=${EXITER_HOST:-exiter}
       - traefik.http.routers.${EXITER_HOST:-exiter}.entrypoints=websecure
-      - traefik.http.routers.${EXITER_HOST:-exiter}.rule=Host(`${EXITER_HOST:-exiter}.${TLSDOMAIN}`)
+      - traefik.http.routers.${EXITER_HOST:-exiter}.rule=Host(`${EXITER_HOST:-exiter}.${DOMAIN}`)
       - traefik.http.routers.${EXITER_HOST:-exiter}.tls.certresolver=letsencrypt
       - traefik.http.services.${EXITER_HOST:-exiter}.loadbalancer.server.port=${EXITER_PORT:-13131}
     <<: *logging
