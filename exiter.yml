@@ -9,7 +9,7 @@ x-logging: &logging
 
 services:
   exiter:
-    image: ghcr.io/cryptomanufaktur-io/eth-jit-exiter:main
+    image: ghcr.io/cryptomanufaktur-io/eth-jit-exiter:${EXITER_VERSION}
     restart: unless-stopped
     command: ["--config=/config/exiter.yml"]
     volumes:
