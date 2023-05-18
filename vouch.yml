@@ -10,6 +10,7 @@ x-logging: &logging
 services:
   vouch:
     image: attestant/vouch:${VOUCH_DOCKER_TAG}
+    hostname: vouch-${MEV_HOST}
     restart: unless-stopped
     command: ["--base-dir=/config"]
     volumes:
@@ -24,4 +25,3 @@ services:
       - traefik.http.routers.${MEV_HOST:-mev}.tls.certresolver=letsencrypt
       - traefik.http.services.${MEV_HOST:-mev}.loadbalancer.server.port=18550
     <<: *logging
-
