@@ -142,8 +142,6 @@ for i in {1..2}; do
 # log-level is the global log level for Vouch logging.
 log-level: Info
 
-# Beacon nodes / CLs to connect to. This section is repeated by design further down;
-# Vouch deliberately does not use a hierarchical config
 beacon-node-addresses:
   - ${CL1}
   - ${CL2}
@@ -169,13 +167,8 @@ scheduler:
 
 # submitter submits data to beacon nodes.  If not present the nodes in beacon-node-address above will be used.
 submitter:
-  # style can currently only be 'all'
-  style: all
-  # beacon-node-addresses is the list of addresses to which submit.  Submissions run in parallel
-  beacon-node-addresses:
-    - ${CL1}
-    - ${CL2}
-    - ${CL3}
+  # style can currently only be 'multinode'
+  style: multinode
 
 # blockrelay provides information about mev relays.  Advanced configuration
 # information is available in the documentation.
@@ -189,41 +182,23 @@ strategies:
   beaconblockproposal:
     # style can be 'best', which obtains blocks from all nodes and compares them, or 'first', which uses the first returned
     style: best
-    # beacon-node-addresses are the addresses of beacon nodes to use for this strategy.
-    beacon-node-addresses:
-      - ${CL1}
-      - ${CL2}
-      - ${CL3}
+  blindedbeaconblockproposal:
+    # style can be 'best', which obtains blocks from all nodes and compares them, or 'first', which uses the first returned
+    style: best
   # The attestationdata strategy obtains attestation data from multiple sources.
   attestationdata:
     # style can be 'best', which obtains attestations from all nodes and selects the best, or 'first', which uses the first returned
     style: best
-    # beacon-node-addresses are the addresses of beacon nodes to use for this strategy.
-    beacon-node-addresses:
-      - ${CL1}
-      - ${CL2}
-      - ${CL3}
   # The aggregateattestation strategy obtains aggregate attestations from multiple sources.
   # Note that the list of nodes here must be a subset of those in the attestationdata strategy.  If not, the nodes will not have
   # been gathering the attestations to aggregate and will error when the aggregate request is made.
   aggregateattestation:
     # style can be 'best', which obtains aggregates from all nodes and selects the best, or 'first', which uses the first returned
     style: best
-    # beacon-node-addresses are the addresses of beacon nodes to use for this strategy.
-    # Note that prysm nodes are not supported at current in this strategy.
-    beacon-node-addresses:
-      - ${CL1}
-      - ${CL2}
-      - ${CL3}
   # The synccommitteecontribution strategy obtains sync committee contributions from multiple sources.
   synccommitteecontribution:
     # style can be 'best', which obtains contributions from all nodes and selects the best, or 'first', which uses the first returned
     style: best
-    # beacon-node-addresses are the addresses of beacon nodes to use for this strategy.
-    beacon-node-addresses:
-      - ${CL1}
-      - ${CL2}
-      - ${CL3}
 
 accountmanager:
   dirk:
