@@ -99,6 +99,22 @@ services:
           --verbose
           echo
         done
+  list-accounts:
+    profiles: ["tools"]
+    image: wealdtech/ethdo:${ETHDO_DOCKER_TAG}
+    volumes:
+      - ./config/certs:/config/certs:ro
+    entrypoint: ["/bin/bash","-c"]
+    command:
+      - |
+        /app/ethdo wallet accounts \
+          --wallet=${WALLET_NAME} \
+          --remote=${DIRK1}.${DOMAIN}:13141 \
+          --server-ca-cert /config/certs/dirk_authority.crt \
+          --client-cert /config/certs/vouch${VOUCH_INSTANCE}.crt \
+          --client-key /config/certs/vouch${VOUCH_INSTANCE}.key \
+          --verbose
+
   sign-exits:
     profiles: ["tools"]
     image: wealdtech/ethdo:${ETHDO_DOCKER_TAG}
