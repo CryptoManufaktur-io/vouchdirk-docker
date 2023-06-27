@@ -292,7 +292,6 @@ update() {
     else
       docompose --profile tools pull --ignore-buildable
     fi
-    docompose build --pull --no-cache lotus
     docompose --profile tools build --pull
 
     if ! cmp -s "${ENV_FILE}" "${ENV_FILE}".source; then
