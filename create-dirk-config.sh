@@ -67,7 +67,7 @@ __publicIP=$(curl -s ifconfig.me/ip)
 
 for i in {1..5}; do
   if [ -f dirk$i.yml ]; then
-    break
+    continue
   fi
   varname=DIRK$i
   cat << EOF >dirk$i.yml
@@ -136,7 +136,7 @@ fi
 echo Create vouch config files
 for i in {1..2}; do
   if [ -f vouch$i.yml ]; then
-    break
+    continue
   fi
   cat << EOF >vouch$i.yml
 # log-level is the global log level for Vouch logging.
@@ -240,4 +240,60 @@ dirk:
   ca_cert: /config/certs/dirk_authority.crt
   wallet: ${WALLET_NAME}
 EOF
+
+if [ -z "${TRACE_URL}" ]; then
+  echo Done
+  exit 0
+fi
+
+if [ ! -f "./certs/tempo_authority.crt" ]; then
+  echo Tempo authority not found, creating
+  echo If you already have one, abort now and copy it in!
+  cd certs
+  if [ ! -f tempo_authority.key ]; then
+    openssl genrsa -des3 -out tempo_authority.key 4096
+  fi
+  if [ ! -f tempo_authority.crt ]; then
+    openssl req -x509 -new -nodes -key tempo_authority.key -sha256 -days 1825 -out tempo_authority.crt
+  fi
+  if [ ! -f tempo_host.crt ]; then
+    echo Generating tempo_host key for tempo server
+    trace_host=$(echo "${TRACE_URL}" | awk -F[/:] '{print $4}')
+    openssl genrsa -out tempo_host.key 4096
+    cp generic.ext tempo_host.ext
+    echo "DNS.1 = ${trace_host}" >> tempo_host.ext
+    openssl req -out tempo_host.csr -key tempo_host.key -new -subj "/CN=${trace_host}" -addext "subjectAltName=DNS:${trace_host}"
+    openssl x509 -req -in tempo_host.csr -CA tempo_authority.crt -CAkey tempo_authority.key -CAcreateserial -out tempo_host.crt -days 1825 -sha256 -extfile tempo_host.ext
+    openssl x509 -in tempo_host.crt -text -noout
+  fi
+  cd ..
+fi
+
+if [ ! -f "./certs/tempo_client.crt" ]; then
+  cd certs
+  openssl genrsa -out tempo_client.key 4096
+  cp generic.ext tempo_client.ext
+  echo "DNS.1 = ${VOUCH_SAN}" >> tempo_client.ext
+  openssl req -out tempo_client.csr -key tempo_client.key -new -subj "/CN=${VOUCH_SAN}" -addext "subjectAltName=DNS:${VOUCH_SAN}"
+  openssl x509 -req -in tempo_client.csr -CA tempo_authority.crt -CAkey tempo_authority.key -CAcreateserial -out tempo_client.crt -days 1825 -sha256 -extfile tempo_client.ext
+  openssl x509 -in tempo_client.crt -text -noout
+  cd ..
+fi
+
+for i in {1..2}; do
+  if grep -q "tracing:" vouch$i.yml; then
+    continue
+  fi
+  echo Append tracing config to vouch$i.yml config
+  cat << EOF >>vouch$i.yml
+
+tracing:
+  # Address is the host and port of an OTLP trace receiver.
+  address: '${TRACE_URL}'
+  client-cert: file:///config/certs/tempo_client.crt
+  client-key: file:///config/certs/tempo_client.key
+  ca-cert: file:///config/certs/tempo_authority.crt
+EOF
+done
+
 echo Done

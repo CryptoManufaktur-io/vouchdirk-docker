@@ -9,6 +9,9 @@ This repo assumes a 2 vouch and 5 dirk setup with 3/5 threshold signing, and 3 E
 `cp default.env .env`, edit it to choose whether to run vouch and dirk or just dirk or just vouch, set the instance ID for dirk/vouch, and adjust
 host and domain names to fit your environment.
 
+If you are going to use Vouch traces, set `TRACE_URL` and `VOUCH_SAN` in `.env`. Either copy `tempo_authority.crt` into `config/certs`, or if you don't have a CA and server key for Tempo yet, let
+the next step create them.
+
 `./create-dirk-config.sh` is meant to be run just once. It has no sanity checks and creates the CA, certs, and config yml files. The `config` directory
 would then be copied to each server where a vouch or dirk instance runs. The script gets names from `.env`, which must exist.
 
