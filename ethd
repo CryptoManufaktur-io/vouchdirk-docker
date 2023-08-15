@@ -387,11 +387,11 @@ run() {
 }
 
 stop() {
-    docompose down --remove-orphans
+    docompose down --remove-orphans "$@"
 }
 
 down() {
-    stop
+    stop "$@"
 }
 
 terminate() {
@@ -411,7 +411,7 @@ terminate() {
 }
 
 restart() {
-    stop
+    stop "$@"
     start
 }
 
