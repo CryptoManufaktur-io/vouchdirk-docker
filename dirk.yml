@@ -10,6 +10,7 @@ x-logging: &logging
 services:
   dirk:
     image: attestant/dirk:${DIRK_DOCKER_TAG}
+    hostname: dirk-${MEV_HOST}
     restart: unless-stopped
     command: ["--base-dir=/config"]
     ports:
