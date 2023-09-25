@@ -1,0 +1,27 @@
+version: "3.4"
+x-logging: &logging
+  logging:
+    driver: json-file
+    options:
+      max-size: 10m
+      max-file: "3"
+      tag: '{{.ImageName}}|{{.Name}}|{{.ImageFullID}}|{{.FullID}}'
+
+services:
+  promtail:
+    image: grafana/promtail:latest
+    user: root
+    volumes:
+      - /etc/machine-id:/etc/machine-id:ro
+      - ./promtail:/etc/promtail
+      - promtail-data:/tmp
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    entrypoint: ./etc/promtail/entrypoint.sh
+    command: ["/usr/bin/promtail"]
+    environment:
+      SERVER_LABEL_HOSTNAME: ${SERVER_LABEL_HOSTNAME:-notset}
+    restart: "unless-stopped"
+    <<: *logging
+
+volumes:
+  promtail-data:
