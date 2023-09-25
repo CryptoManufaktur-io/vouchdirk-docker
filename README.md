@@ -72,6 +72,11 @@ Each Dirk instance is its own entity. If a Dirk instance fails, the backup of th
 
 By adding `prometheus.yml:ext-network.yml` you can run a Prometheus that can remote-write to your Mimir or Thanos, with the remote-write section in `prometheus/custom-prom.yml`.
 
+
+## Promtail - Logs collection
+
+By adding `promtail.yml:ext-network.yml` you can run a Promtail that will collect logs from all containers and send them to your remote Loki, with the remote-write section in `promtail/custom-lokiurl.yml`.
+
 ## Acknowledgements
 
 Huge THANK YOU to Jeff Schroeder at Jump Crypto for generously sharing his knowledge of this setup, and to Jim McDonald at attestant.io for creating these tools
