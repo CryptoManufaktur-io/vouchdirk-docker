@@ -1,6 +1,5 @@
 FROM prom/prometheus:latest
 
-RUN apt-get update && apt-get install  -y bash tzdata
 COPY ./*-prom.yml /etc/prometheus/
 COPY --chown=nobody:nobody ./choose-config.sh /usr/local/bin/choose-config.sh
 # Belt and suspenders

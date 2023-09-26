@@ -3,7 +3,8 @@
 set -uo pipefail
 
 __docker_exe="docker"
-__compose_exe="docker-compose"
+__compose_exe="docker compose"
+__compose_upgraded=0
 
 dodocker() {
     $__docker_exe "$@"
