@@ -90,7 +90,7 @@ Thanos, with the remote-write section in `prometheus/custom-prom.yml`.
 
 ## Promtail - Logs collection
 
-By adding `promtail.yml:ext-network.yml` you can run a Promtail that will collect logs from all containers and send them to your remote Loki, with the remote-write section in `promtail/custom-lokiurl.yml`.
+By adding `promtail.yml:ext-network.yml` [***Add ext-network.yml once, if already added in prometheus then skip it***] you can run a Promtail that will collect logs from all containers and send them to your remote Loki, with the remote-write section in `promtail/custom-lokiurl.yml`.
 
 ## Acknowledgements
 
