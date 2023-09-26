@@ -14,7 +14,7 @@ services:
       context: ./prometheus
     image: prometheus:vd-local
     volumes:
-      - prom-data:/prometheus
+      - prometheus-data:/prometheus
       - ./prometheus/custom-prom.yml:/etc/prometheus/custom-prom.yml:ro
       - /etc/localtime:/etc/localtime:ro
     environment:
@@ -43,4 +43,4 @@ services:
     <<: *logging
 
 volumes:
-  prom-data:
+  prometheus-data:

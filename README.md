@@ -79,6 +79,15 @@ in the first place, and always having patience and time for explanations.
 
 ## Resources
 
-- [Distributed key generation guide](https://github.com/attestantio/dirk/blob/master/docs/distributed_key_generation.md)
-- [Ethstaker Discord](https://discord.io/ethstaker)
+- [Distributed key generation guide](https://github.com/attestantio/dirk/blob/master/docs/distributed_key_generation.md)  
+- [Ethstaker Discord](https://discord.io/ethstaker)  
 - [Attestant Discord](https://discord.gg/U5GNUuQQr3)
+
+## License
+
+[Apache License v2](LICENSE)
+
+## Version
+
+This is vouchdirk-docker v1.1.0
+
