@@ -1,4 +1,4 @@
-FROM ubuntu/prometheus
+FROM prom/prometheus:latest
 
 RUN apt-get update && apt-get install  -y bash tzdata
 COPY ./*-prom.yml /etc/prometheus/
