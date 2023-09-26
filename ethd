@@ -484,11 +484,17 @@ version() {
     # Client versions
     case "${value}" in
         *dirk.yml* )
+            echo "Dirk"
             docompose exec dirk /app/dirk --base-dir=/config --version
             echo
             ;;&
         *vouch.yml* )
+            echo "Vouch"
             docompose exec vouch /app/vouch --version
+            echo
+            ;;&
+        *prometheus.yml* )
+            docompose exec prometheus /bin/prometheus --version
             echo
             ;;&
     esac
