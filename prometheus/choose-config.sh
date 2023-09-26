@@ -6,8 +6,11 @@
 cp /etc/prometheus/global-prom.yml /etc/prometheus/prometheus.yml
 
 case "$CLIENT" in
-  *dirk* ) cat /etc/prometheus/dirk-prom.yml >> /etc/prometheus/prometheus.yml ;;&
-  *vouch* ) cat /etc/prometheus/vouch-prom.yml >> /etc/prometheus/prometheus.yml ;;
+  *dirk* ) cat /etc/prometheus/dirk-prom.yml >> /etc/prometheus/prometheus.yml;;
+esac
+
+case "$CLIENT" in
+  *vouch* ) cat /etc/prometheus/vouch-prom.yml >> /etc/prometheus/prometheus.yml;;
 esac
 
 if [ -f "/etc/prometheus/custom-prom.yml" ]; then
