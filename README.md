@@ -82,15 +82,10 @@ You will need to run this on all five (5) Dirk instances individually.
 Each Dirk instance is its own entity. If a Dirk instance fails, the backup of that instance can be restored, and once it
 is rebuilt it will continue in the cluster.
 
-## Prometheus
+## Prometheus/Promtail/Node Exporter
 
 By adding `:prometheus.yml` to `COMPOSE_FILE` in `.env`  you can run a Prometheus that can remote-write to your Mimir or
 Thanos, with the remote-write section in `prometheus/custom-prom.yml`.
-
-
-## Promtail - Logs collection
-
-By adding `promtail.yml:ext-network.yml` [***Add ext-network.yml once, if already added in prometheus then skip it***] you can run a Promtail that will collect logs from all containers and send them to your remote Loki, with the remote-write section in `promtail/custom-lokiurl.yml`.
 
 ## Acknowledgements
 
