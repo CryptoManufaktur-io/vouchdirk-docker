@@ -185,6 +185,11 @@ strategies:
   blindedbeaconblockproposal:
     # style can be 'best', which obtains blocks from all nodes and compares them, or 'first', which uses the first returned
     style: best
+  # The beaconblockroot strategy obtains the beacon block root from multiple beacon nodes.
+  beaconblockroot:
+    # style can be 'first', which uses the first returned, 'latest', which uses the latest returned, or 'majority', which uses
+    # the one returned by most nodes (taking the latest in case of a tie).
+    style: 'latest'
   # The attestationdata strategy obtains attestation data from multiple sources.
   attestationdata:
     # style can be 'best', which obtains attestations from all nodes and selects the best, or 'first', which uses the first returned

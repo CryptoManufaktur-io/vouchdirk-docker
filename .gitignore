@@ -3,6 +3,7 @@ config
 .env*
 deposits*.json
 prometheus/custom-prom.yml
+promtail/custom-lokiurl.yml
 !keys/.empty
 keys
 .wallet_created
