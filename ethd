@@ -495,7 +495,7 @@ cmd() {
 
 terminate() {
     if [ -z "$(dodocker volume ls -q -f "name=^$(basename "$(realpath .)")_[^_]+")" ]; then
-        echo "There are no data stores - Docker volumes - left to remove for this Ethereum node."
+        echo "There are no data stores - Docker volumes - left to remove for this ${__app_name}."
         stop
         exit 0
     fi
