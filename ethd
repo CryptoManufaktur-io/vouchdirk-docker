@@ -409,9 +409,8 @@ envmigrate() {
         return
     fi
 
-    ALL_VARS=( COMPOSE_FILE NETWORK SNAPSHOT EXTRAS LOG_LEVEL ARCHIVE_NODE DOMAIN RPC_HOST RPC_LB WS_HOST WS_LB \
-               RPC_PORT WS_PORT P2P_PORT GWEMIX_SRC_BUILD_TARGET GWEMIX_SRC_REPO GWEMIX_DOCKER_TAG GWEMIX_DOCKER_REPO \
-               GWEMIX_DOCKERFILE )
+    ALL_VARS=( COMPOSE_FILE NETWORK SNAPSHOT LOG_LEVEL DOMAIN RPC_HOST RPC_LB WS_HOST WS_LB RPC_PORT WS_PORT P2P_PORT \
+               X_SRC_BUILD_TARGET X_SRC_REPO X_DOCKER_TAG X_DOCKER_REPO X_DOCKERFILE )
     OLD_VARS=( )
     NEW_VARS=( )
 
@@ -429,20 +428,9 @@ envmigrate() {
     __migrated=1
     ${__as_owner} cp default.env "${ENV_FILE}"
     # Migrate over user settings
-    __adjust_NETWORK=""
     for var in "${ALL_VARS[@]}"; do
         value=$(sed -n -e "s/^${var}=\(.*\)/\1/p" "${ENV_FILE}.source" || true)
-        if [ -n "${value}" ] || [ "${var}" = "EXTRA_STATIC_NODES" ] || [ "${var}" = "SNAPSHOT" ]; then
-            # For goerli and mainnet, we mean op-goerli and op-mainnet
-            if [[ "${var}" = "NETWORK" && ( "${value}" = "goerli" || "${value}" = "mainnet" ) ]]; then
-                __adjust_NETWORK="${value}"
-                value="op-${value}"
-            fi
-            # Coming from the original Optimism Docker, replace ${NETWORK} in strings with goerli or mainnet
-            if [[ -n "${__adjust_NETWORK}" && ( "${var}" = "SNAPSHOT" || "${var}" = "SEQUENCER"
-                || "${var}" = "LEGACY_TAR" ) ]]; then
-                value="${value//\$\{NETWORK\}/${__adjust_NETWORK}}"
-            fi
+        if [ -n "${value}" ] || [ "${var}" = "SNAPSHOT" ]; then
             sed -i'.original' -e "s~^\(${var}\s*=\s*\).*$~\1${value}~" "${ENV_FILE}"
         fi
     done
@@ -554,9 +542,9 @@ handle_error() {
         echo "$__me terminated by user"
     else
         echo "$__me failed with error $exit_code on line $line_no"
-        if [ -n "${__command}" ]; then                                                                                      
-            echo "This happened during $__me ${__command} ${__params}"                                                      
-        fi    
+        if [ -n "${__command}" ]; then
+            echo "This happened during $__me ${__command} ${__params}"
+        fi
     fi
     if [ "$__during_update" -eq 1 ] && [ "$__during_migrate" -eq 1 ]; then
         cp "${ENV_FILE}" "${ENV_FILE}".partial
