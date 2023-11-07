@@ -1,4 +1,3 @@
-version: "3.4"
 x-logging: &logging
   logging:
     driver: json-file
@@ -13,6 +12,7 @@ services:
     build:
       context: ./prometheus
     image: prometheus:vd-local
+    pull_policy: build
     volumes:
       - prometheus-data:/prometheus
       - ./prometheus/custom-prom.yml:/etc/prometheus/custom-prom.yml:ro
