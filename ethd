@@ -275,21 +275,14 @@ check_disk_space() {
         exit 70
     fi
 
-    var="COMPOSE_FILE"
-    value=$(sed -n -e "s/^${var}=\(.*\)/\1/p" "${ENV_FILE}" || true)
-
 # Literal match intended
 # shellcheck disable=SC2076
     if [[ "${__free_space}" -lt 52428800 ]]; then
-        echo ""
+        echo
         echo "You have less than 50 GiB of free disk space:"
-        echo ""
+        echo 
         df -h "${__docker_dir}"
-        echo ""
-        echo "Pruning does not appear an option for your client mix."
-        echo "A resync may help."
-        echo "If total space is less than 1.5 TiB, consider cloning to a larger drive."
-        echo ""
+        echo
     fi
 }
 
