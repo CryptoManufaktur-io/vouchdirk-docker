@@ -367,7 +367,7 @@ update() {
 
     dodocker system prune --force
     docompose --profile tools pull
-    docompose --profile tools build --pull --no-cache # It's a source build, build every time
+    docompose --profile tools build --pull
 
     if [ "${__migrated}" -eq 1 ] && ! cmp -s "${ENV_FILE}" "${ENV_FILE}".source; then
         cp "${ENV_FILE}".source "${ENV_FILE}".bak
