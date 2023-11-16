@@ -24,6 +24,8 @@ Run `./ethd restart dirk` to ensure Dirk loads this new wallet correctly.
 
 ## Key generation
 
+> Note key generation takes ~ 3.5 GiB of RAM
+
 To create keys, adjust start and stop index in `.env` and then run `docker compose run --rm create-accounts`.
 
 To verify the first of these keys for correctness, run `docker compose run --rm verify-account`
