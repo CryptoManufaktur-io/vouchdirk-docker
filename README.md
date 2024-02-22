@@ -106,4 +106,4 @@ at attestant.io for creating these tools in the first place, and always having p
 
 ## Version
 
-This is Vouchdirk Docker v1.2.0
+This is Vouchdirk Docker v1.2.1

@@ -154,7 +154,7 @@ services:
 
   encrypt-exits:
     profiles: ["tools"]
-    image: lidofinance/validator-ejector:dev
+    image: lidofinance/validator-ejector:${EJECTOR_DOCKER_TAG}
     volumes:
       - ./config/exitmessages:/app/encryptor/input/:ro
       - ./config/exits:/app/encryptor/output/:rw
