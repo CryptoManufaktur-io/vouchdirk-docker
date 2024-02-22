@@ -1,6 +1,6 @@
 # vouchdirk-docker
 
-Attestant's Vouch &amp; Dirk in docker compose, to be used with eth-docker
+Attestant's Vouch &amp; Dirk in Docker Compose, to be used with Eth Docker
 
 This repo assumes a 2 vouch and 5 dirk setup with 3/5 threshold signing, and 3 Ethereum CL:EL full nodes.
 
@@ -106,4 +106,4 @@ at attestant.io for creating these tools in the first place, and always having p
 
 ## Version
 
-This is vouchdirk-docker v1.1.1
+This is Vouchdirk Docker v1.2.0
