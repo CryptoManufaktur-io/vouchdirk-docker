@@ -123,8 +123,9 @@ services:
     entrypoint: ["/bin/bash","-c"]
     command:
       - |
-        set -e
         apt-get update && apt-get install -y jq
+        __fail=0
+        __success=0
         for (( i=${STARTACCOUNT}; i<=${ENDACCOUNT}; i++ )); do
           /app/ethdo validator exit \
           --json \
@@ -134,10 +135,19 @@ services:
           --client-key /config/certs/vouch${VOUCH_INSTANCE}.key \
           --account=${WALLET_NAME}/val-$$i \
           --connection=${CL1} >/config/exitmessages/exit-operation.json
-          echo Signed exit for validator account $$i
-          __index=$(jq -r .message.validator_index </config/exitmessages/exit-operation.json)
-          mv /config/exitmessages/exit-operation.json /config/exitmessages/$$__index-exit.json
+          __code=$?
+          if [[ $$__code -eq 0 ]]; then
+            echo Signed exit for validator account $$i
+            __index=$(jq -r .message.validator_index </config/exitmessages/exit-operation.json)
+            mv /config/exitmessages/exit-operation.json /config/exitmessages/$$__index-exit.json
+            (( __success+=1 ))
+          else
+            echo Could not sign exit for validator account $$i
+            (( __fail+=1 ))
+          fi
         done
+        echo Successfully signed $$__success exits and failed on $$__fail
+        echo
         echo Please run \"docker-compose run --rm encrypt-exits\" next.
         echo They\'ll be in ./config/exits afterwards, encrypted with the password in .env
         echo Please remember to delete the unencrypted files in ./config/exitmessages
