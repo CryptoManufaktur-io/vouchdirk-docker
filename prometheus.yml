@@ -14,6 +14,7 @@ services:
     image: prometheus:vd-local
     pull_policy: never
     volumes:
+      - ./prometheus/file_sd:/etc/prometheus/file_sd
       - prometheus-data:/prometheus
       - ./prometheus/custom-prom.yml:/etc/prometheus/custom-prom.yml:ro
       - /etc/localtime:/etc/localtime:ro
