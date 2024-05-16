@@ -89,6 +89,15 @@ is rebuilt it will continue in the cluster.
 By adding `:prometheus.yml` to `COMPOSE_FILE` in `.env`  you can run a Prometheus that can remote-write to your Mimir or
 Thanos, with the remote-write section in `prometheus/custom-prom.yml`.
 
+In case you need prometheus to also scrape extra custom endpoints, add a yaml file in `prometheus/file_sd` folder. Example below
+
+```yaml
+- labels:
+    job: JOB_LABEL
+  targets:
+  - JOB_ENDPOINT:JOB_PORT
+```
+
 ## Acknowledgements
 
 Huge THANK YOU to Jeff Schroeder at Jump Crypto for generously sharing his knowledge of this setup, and to Jim McDonald
