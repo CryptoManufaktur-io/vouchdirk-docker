@@ -7,3 +7,4 @@ promtail/custom-lokiurl.yml
 !keys/.empty
 keys
 .wallet_created
+prometheus/file_sd/*.yml
