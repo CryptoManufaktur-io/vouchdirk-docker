@@ -8,3 +8,4 @@ promtail/custom-lokiurl.yml
 keys
 .wallet_created
 prometheus/file_sd/*.yml
+*.swp

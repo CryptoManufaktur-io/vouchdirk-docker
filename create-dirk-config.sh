@@ -147,6 +147,17 @@ beacon-node-addresses:
   - ${CL2}
   - ${CL3}
 
+eth2client:
+  # timeout is the timeout for all operations against beacon nodes that are not related to a specific validating
+  # operation, for example fetching the current list of active validators.  These operations are not time-sensitive,
+  # and can contain large amounts of information, hence the longer timeout.
+  timeout: '2m'
+  #
+  # allow-delayed-start allows Vouch to start if some of the consensus nodes are unavailable.
+  # Note that this can result in Vouch being active without being able to validate, however, if strategies use
+  # a subset of beacon nodes that are all unavailable.
+  allow-delayed-start: true
+
 # metrics is the module that logs metrics, in this case using prometheus.
 metrics:
   prometheus:
@@ -160,6 +171,19 @@ graffiti:
   static:
     value: ${GRAFFITI}
 
+# controller controls when validating actions take place.
+controller:
+  fast-track:
+    # If attestations is true then Vouch will attest as soon as it receives notification that the head block has been updated
+    # for the duties' slot.
+    attestations: true
+    # If sync-committees is true then Vouch will generate sync committee messages as soon as it receives notification that
+    # the head block has been updated for the duties' slot.
+    sync-committees: true
+    # grace is the delay between receiving the notification of the head block and starting the fast track process.  This allows
+    # the rest of the network to settle if we saw the head block early.
+    grace: '200ms'
+
 # scheduler handles the scheduling of Vouch's operations.
 scheduler:
   # style can be 'basic' (deprecated) or 'advanced' (default).  Do not use the basic scheduler unless instructed.
@@ -169,6 +193,20 @@ scheduler:
 submitter:
   # style can currently only be 'multinode'
   style: multinode
+
+# beaconblockproposer provides control of the beacon block proposal process.
+beaconblockproposer:
+  # If unblind-from-all-relays is true then Vouch will use all relays that it asked for blocks to unblind the
+  # selected bid.  This can potentially increase the reliability of obtaining an unblinded block, but will increment
+  # failures in the eth_builder_client_operations_total metric for the relays that do not know of the bid.
+  unblind-from-all-relays: false
+  # builder-boost-factor provides relative weightings between locally-produced and relay-supplied execution payloads.
+  # See https://ethereum.github.io/beacon-APIs/#/ValidatorRequiredApi/produceBlockV3 for full details, but some sample
+  # values are:
+  # -  50: `builder value` must be more than twice the local value (`local value*(100/50)`) to be used
+  # -  91: `builder value` must be more than ~10% higher than the local value (`local value*(100/91)`) to be used
+  # - 100: `builder value` must be more than the local value (`local value*(100/100)`) to be used
+  builder-boost-factor: 91
 
 # blockrelay provides information about mev relays.  Advanced configuration
 # information is available in the documentation.
@@ -182,9 +220,6 @@ strategies:
   beaconblockproposal:
     # style can be 'best', which obtains blocks from all nodes and compares them, or 'first', which uses the first returned
     style: best
-  blindedbeaconblockproposal:
-    # style can be 'best', which obtains blocks from all nodes and compares them, or 'first', which uses the first returned
-    style: best
   # The beaconblockroot strategy obtains the beacon block root from multiple beacon nodes.
   beaconblockroot:
     # style can be 'first', which uses the first returned, 'latest', which uses the latest returned, or 'majority', which uses
@@ -192,8 +227,13 @@ strategies:
     style: latest
   # The attestationdata strategy obtains attestation data from multiple sources.
   attestationdata:
-    # style can be 'best', which obtains attestations from all nodes and selects the best, or 'first', which uses the first returned
+    # style can be 'best', which obtains attestation data from all nodes and selects the best, 'first', which uses the first returned,
+    # or 'majority', which obtains attestation data from all nodes and selects the most common.
     style: best
+    majority:
+    # threshold is the minimum number of beacon nodes that have to provide the same attestation data for Vouch with the 'majority'
+    # strategy to use it.
+      threshold: 2
   # The aggregateattestation strategy obtains aggregate attestations from multiple sources.
   # Note that the list of nodes here must be a subset of those in the attestationdata strategy.  If not, the nodes will not have
   # been gathering the attestations to aggregate and will error when the aggregate request is made.
