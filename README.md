@@ -39,7 +39,7 @@ adjusting the `{1..10}` for the range you want to have in the file.
 
 ## Architecture; redundancy and slashing considerations
 
-2 Vouch (one warm standby) and a 3/5 Dirk (3 threshold, 5 total) were chosen carefully. With 2 Vouch and 2/4 Dirk there
+2 Vouch (one cold standby) and a 3/5 Dirk (3 threshold, 5 total) were chosen carefully. With 2 Vouch and 2/4 Dirk there
 would be a risk of slashing; 3 Vouch and 3/5 Dirk, Vouch might not get to threshold and never be able to sign duties. 
 
 1 Vouch and 2/3 Dirk would also work just as well.
