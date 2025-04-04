@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2006,SC2168
 # Run this once, it currently does not query or sanity check anything at all
 set -e
+# shellcheck disable=SC1091
 source .env
 mkdir -p ./config/certs
 cd config/certs
@@ -21,28 +23,28 @@ subjectAltName = @alt_names
 EOF
 echo Create vouch 1 and 2 keys
 for i in {1..2}; do
-  if [ -f vouch$i.crt ]; then
+  if [ -f "vouch$i.crt" ]; then
     continue
   fi
-  openssl genrsa -out vouch$i.key 4096
-  cp generic.ext vouch$i.ext
-  echo "DNS.1 = vouch$i" >> vouch$i.ext
-  openssl req -out vouch$i.csr -key vouch$i.key -new -subj "/CN=vouch$i" -addext "subjectAltName=DNS:vouch$i"
-  openssl x509 -req -in vouch$i.csr -CA dirk_authority.crt -CAkey dirk_authority.key -CAcreateserial -out vouch$i.crt -days 1825 -sha256 -extfile vouch$i.ext  
-  openssl x509 -in vouch$i.crt -text -noout
+  openssl genrsa -out "vouch$i.key" 4096
+  cp generic.ext "vouch$i.ext"
+  echo "DNS.1 = vouch$i" >> "vouch$i.ext"
+  openssl req -out "vouch$i.csr" -key "vouch$i.key" -new -subj "/CN=vouch$i" -addext "subjectAltName=DNS:vouch$i"
+  openssl x509 -req -in "vouch$i.csr" -CA dirk_authority.crt -CAkey dirk_authority.key -CAcreateserial -out "vouch$i.crt" -days 1825 -sha256 -extfile "vouch$i.ext"
+  openssl x509 -in "vouch$i.crt" -text -noout
 done
 echo Create dirk 1 through 5 keys
 for i in {1..5}; do
-  if [ -f dirk$i.crt ]; then
+  if [ -f "dirk$i.crt" ]; then
     continue
   fi
-  openssl genrsa -out dirk$i.key 4096
-  cp generic.ext dirk$i.ext
+  openssl genrsa -out "dirk$i.key" 4096
+  cp generic.ext "dirk$i.ext"
   varname=DIRK$i
-  echo "DNS.1 = ${!varname}.${DOMAIN}" >> dirk$i.ext
-  openssl req -out dirk$i.csr -key dirk$i.key -new -subj "/CN=${!varname}.${DOMAIN}" -addext "subjectAltName=DNS:${!varname}.${DOMAIN}"
-  openssl x509 -req -in dirk$i.csr -CA dirk_authority.crt -CAkey dirk_authority.key -CAcreateserial -out dirk$i.crt -days 1825 -sha256 -extfile dirk$i.ext
-  openssl x509 -in dirk$i.crt -text -noout
+  echo "DNS.1 = ${!varname}.${DOMAIN}" >> "dirk$i.ext"
+  openssl req -out "dirk$i.csr" -key "dirk$i.key" -new -subj "/CN=${!varname}.${DOMAIN}" -addext "subjectAltName=DNS:${!varname}.${DOMAIN}"
+  openssl x509 -req -in "dirk$i.csr" -CA dirk_authority.crt -CAkey dirk_authority.key -CAcreateserial -out "dirk$i.crt" -days 1825 -sha256 -extfile "dirk$i.ext"
+  openssl x509 -in "dirk$i.crt" -text -noout
 done
 echo Create dirk config files
 cd ..
@@ -53,24 +55,24 @@ for i in {1..5}; do
   part2=0
   while [ "$part1" -le $floor ]; do
     part1=$RANDOM
-    let "part1 %= $ceil"
+    (( part1 %= ceil ))
   done
   while [ "$part2" -le $floor ]; do
     part2=$RANDOM
-    let "part2 %= $ceil"
+    (( part2 %= ceil ))
   done
-  id[$i]=$part1$part2
+  id[i]=$part1$part2
   echo "ID $i is ${id[$i]}"
 done
 
 __publicIP=$(curl -s -4 https://ifconfig.me/ip)
 
 for i in {1..5}; do
-  if [ -f dirk$i.yml ]; then
+  if [ -f "dirk$i.yml" ]; then
     continue
   fi
   varname=DIRK$i
-  cat << EOF >dirk$i.yml
+  cat << EOF >"dirk$i.yml"
 # log-level is the global log level for Dirk logging.
 log-level: Info
 
@@ -121,7 +123,7 @@ process:
   # generation-passphrase is the passphrase used to encrypt newly-generated accounts.  It is a majordomo URL.
   generation-passphrase: file:///config/passphrases/account-passphrase.txt
 permissions:
-  # This permission allows vouch1/2 the ability to carry out all operations on accounts in all wallets. 
+  # This permission allows vouch1/2 the ability to carry out all operations on accounts in all wallets.
   vouch1:
     .*: All
   vouch2:
@@ -135,10 +137,10 @@ if [ ! -f passphrases/account-passphrase.txt ]; then
 fi
 echo Create vouch config files
 for i in {1..2}; do
-  if [ -f vouch$i.yml ]; then
+  if [ -f "vouch$i.yml" ]; then
     continue
   fi
-  cat << EOF >vouch$i.yml
+  cat << EOF >"vouch$i.yml"
 # log-level is the global log level for Vouch logging.
 log-level: Info
 
@@ -326,11 +328,11 @@ if [ ! -f "./certs/tempo_client.crt" ]; then
 fi
 
 for i in {1..2}; do
-  if grep -q "tracing:" vouch$i.yml; then
+  if grep -q "tracing:" "vouch$i.yml"; then
     continue
   fi
-  echo Append tracing config to vouch$i.yml config
-  cat << EOF >>vouch$i.yml
+  echo Append tracing config to "vouch$i.yml" config
+  cat << EOF >>"vouch$i.yml"
 
 tracing:
   # Address is the host and port of an OTLP trace receiver.

@@ -12,7 +12,7 @@ services:
     restart: unless-stopped
     command: ["--base-dir=/config"]
     ports:
-      - 13141:13141/tcp 
+      - 13141:13141/tcp
     volumes:
       - ./config/dirk${DIRK_INSTANCE}.yml:/config/dirk.yml:ro
       - ./config/certs:/config/certs:ro
