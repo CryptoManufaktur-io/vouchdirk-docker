@@ -33,14 +33,14 @@ To verify the first of these keys for correctness, run `docker compose run --rm 
 To create deposit data, using the same start and stop index in `.env`, run `docker compose run --rm create-depositdata`.
 Adjust `FORK_VERSION` in `.env` if you are going to generate for a testnet.
 
-You can then create a single deposit.json with:  
-`jq -n '[inputs|add]' config/depositdata/deposit-val-{1..10}.json > ~/deposits.json`  
+You can then create a single deposit.json with:
+`jq -n '[inputs|add]' config/depositdata/deposit-val-{1..10}.json > ~/deposits.json`
 adjusting the `{1..10}` for the range you want to have in the file.
 
 ## Architecture; redundancy and slashing considerations
 
 2 Vouch (one cold standby) and a 3/5 Dirk (3 threshold, 5 total) were chosen carefully. With 2 Vouch and 2/4 Dirk there
-would be a risk of slashing; 3 Vouch and 3/5 Dirk, Vouch might not get to threshold and never be able to sign duties. 
+would be a risk of slashing; 3 Vouch and 3/5 Dirk, Vouch might not get to threshold and never be able to sign duties.
 
 1 Vouch and 2/3 Dirk would also work just as well.
 
@@ -105,8 +105,8 @@ at attestant.io for creating these tools in the first place, and always having p
 
 ## Resources
 
-- [Distributed key generation guide](https://github.com/attestantio/dirk/blob/master/docs/distributed_key_generation.md)  
-- [Ethstaker Discord](https://discord.io/ethstaker)  
+- [Distributed key generation guide](https://github.com/attestantio/dirk/blob/master/docs/distributed_key_generation.md)
+- [Ethstaker Discord](https://discord.io/ethstaker)
 - [Attestant Discord](https://discord.gg/U5GNUuQQr3)
 
 ## License

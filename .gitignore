@@ -1,6 +1,5 @@
 config
 !config/.empty
-.env*
 deposits*.json
 prometheus/custom-prom.yml
 promtail/custom-lokiurl.yml
@@ -8,4 +7,8 @@ promtail/custom-lokiurl.yml
 keys
 .wallet_created
 prometheus/file_sd/*.yml
+.env*
 *.swp
+*.bak
+*.original
+custom.yml
