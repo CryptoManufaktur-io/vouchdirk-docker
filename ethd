@@ -729,18 +729,6 @@ update() {
       if [[ "${__branch}" =~ ^tag-* ]]; then
         git checkout main
       fi
-# This preps for a change of ext-network.yml in a future update, after the next hardfork
-      ${__as_owner} cp ext-network.yml ext-network.yml.bak
-      ${__as_owner} git update-index --no-assume-unchanged ext-network.yml
-      DOCKER_EXT_NETWORK=$(${__as_owner} sed -n 's/^\s*name:\s*\(.*\)/\1/p' ext-network.yml)
-# I mean this literally
-# shellcheck disable=SC2016
-      if [ ! "${DOCKER_EXT_NETWORK:-"traefik_default"}" = '${DOCKER_EXT_NETWORK}' ]; then
-        __var=DOCKER_EXT_NETWORK
-        __update_value_in_env "${__var}" "${!__var}" "${__env_file}"
-      fi
-      ${__as_owner} git restore ext-network.yml
-# End ext-network prep
       ${__as_owner} git pull
     else
       export ETHDPINNED="${__value}"
@@ -755,13 +743,10 @@ update() {
     exec "${BASH_SOURCE[0]}" update "$@"
   fi
 
+# This if can be removed after the next hard fork, Fusaka
   if [ -f "ext-network.yml.bak" ]; then
-# Remove this next line after the next hardfork
-    ${__as_owner} cp ext-network.yml.bak ext-network.yml
     ${__as_owner} rm ext-network.yml.bak
   fi
-# Remove this next line after the next hardfork
-  ${__as_owner} git update-index --assume-unchanged ext-network.yml
 
   __keep_targets=1
   __debug=0
